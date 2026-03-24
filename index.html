@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RagSQA - Real-time Audio Question Answering Dataset</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #191919;
+            --secondary-color: #666;
+            --border-color: #e5e5e5;
+            --hover-color: #f5f5f5;
+            --accent-color: #2e2e2e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: #ffffff;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            padding: 4rem 0 3rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            color: #000;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 800px;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--hover-color);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #000;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+
+        section:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #000;
+            letter-spacing: -0.02em;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            margin-top: 3rem;
+            color: #000;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--hover-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .stat-card h4 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .big-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .stat-row:first-of-type {
+            margin-top: 1rem;
+        }
+
+        .stat-row .label {
+            color: var(--secondary-color);
+        }
+
+        .stat-row .value {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        /* Charts */
+        .chart-container {
+            margin: 2rem 0;
+            background: white;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .chart-wrapper.small {
+            height: 300px;
+        }
+
+        /* Label Stats Table */
+        .label-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: white;
+        }
+
+        .label-table th,
+        .label-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .label-table th {
+            background: var(--hover-color);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--secondary-color);
+        }
+
+        .label-table td {
+            font-size: 0.95rem;
+        }
+
+        .label-table tr:hover {
+            background: var(--hover-color);
+        }
+
+        /* Example Cards */
+        .example-card {
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.2s;
+        }
+
+        .example-card:hover {
+            border-color: #ccc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .field {
+            margin-bottom: 1.5rem;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .field-content {
+            font-size: 1rem;
+            color: var(--primary-color);
+            line-height: 1.6;
+        }
+
+        .field-content.knowledge {
+            white-space: pre-wrap;
+            background: #fff;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+            margin-top: 0.5rem;
+        }
+
+        .answer-highlight {
+            font-weight: 600;
+            color: #000;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrapper {
+                height: 350px;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">RagSQA</div>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#statistics">Statistics</a></li>
+                <li><a href="#chinese-examples">中文样例</a></li>
+                <li><a href="#english-examples">English Examples</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="overview">
+        <div class="container">
+            <h1>RagSQA</h1>
+            <p class="subtitle">A comprehensive bilingual audio-based question answering dataset featuring real-time and knowledge-based queries. RagSQA combines spoken audio with context-dependent questions, enabling research in multimodal reasoning and temporal information retrieval.</p>
+            <div class="quick-stats">
+                <div class="stat-box">
+                    <span class="stat-number">6,431</span>
+                    <span class="stat-label">Total Samples</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">2,336</span>
+                    <span class="stat-label">Chinese</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">4,095</span>
+                    <span class="stat-label">English</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">27.3h</span>
+                    <span class="stat-label">Total Audio</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="statistics">
+            <div class="container">
+                <h2>Dataset Statistics</h2>
+
+                <h3>Category Distribution</h3>
+                <div class="chart-container">
+                    <div class="chart-wrapper">
+                        <canvas id="nestedPieChart"></canvas>
+                    </div>
+                </div>
+
+                <h3>Chinese (中文) - 2,336 samples</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Audio Duration</h4>
+                        <div class="big-number">6.6h</div>
+                        <div class="stat-row">
+                            <span class="label">Average per sample</span>
+                            <span class="value">10.2s</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Question Length</h4>
+                        <div class="big-number">20.2</div>
+                        <div class="stat-row">
+                            <span class="label">Average characters</span>
+                            <span class="value">~20 chars</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Answer Length</h4>
+                        <div class="big-number">5.8</div>
+                        <div class="stat-row">
+                            <span class="label">Average characters</span>
+                            <span class="value">~6 chars</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Query Types</h4>
+                        <div class="stat-row">
+                            <span class="label">Real-time</span>
+                            <span class="value">37.7% (880)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Non-real-time</span>
+                            <span class="value">62.3% (1,456)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>English - 4,095 samples</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Audio Duration</h4>
+                        <div class="big-number">20.7h</div>
+                        <div class="stat-row">
+                            <span class="label">Average per sample</span>
+                            <span class="value">18.2s</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Question Length</h4>
+                        <div class="big-number">83.4</div>
+                        <div class="stat-row">
+                            <span class="label">Average characters</span>
+                            <span class="value">~83 chars</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Answer Length</h4>
+                        <div class="big-number">12.2</div>
+                        <div class="stat-row">
+                            <span class="label">Average characters</span>
+                            <span class="value">~12 chars</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Query Types</h4>
+                        <div class="stat-row">
+                            <span class="label">Real-time</span>
+                            <span class="value">10.7% (439)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="label">Non-real-time</span>
+                            <span class="value">89.3% (3,656)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Language Comparison</h3>
+                <div class="chart-container">
+                    <div class="chart-wrapper small">
+                        <canvas id="languageChart"></canvas>
+                    </div>
+                </div>
+
+                <h3>Chinese - By Category Breakdown</h3>
+                <table class="label-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Avg Q Len</th>
+                            <th>Avg A Len</th>
+                            <th>Real-time</th>
+                            <th>Non-real-time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Daily</strong></td>
+                            <td>343</td>
+                            <td>21 chars</td>
+                            <td>6 chars</td>
+                            <td>186 (54.2%)</td>
+                            <td>157 (45.8%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sports and Competitions</strong></td>
+                            <td>399</td>
+                            <td>20 chars</td>
+                            <td>6 chars</td>
+                            <td>144 (36.1%)</td>
+                            <td>255 (63.9%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>History and Culture</strong></td>
+                            <td>499</td>
+                            <td>20 chars</td>
+                            <td>6 chars</td>
+                            <td>195 (39.1%)</td>
+                            <td>304 (60.9%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Company and Products</strong></td>
+                            <td>408</td>
+                            <td>21 chars</td>
+                            <td>6 chars</td>
+                            <td>132 (32.4%)</td>
+                            <td>276 (67.6%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Professional Fields</strong></td>
+                            <td>277</td>
+                            <td>20 chars</td>
+                            <td>5 chars</td>
+                            <td>95 (34.3%)</td>
+                            <td>182 (65.7%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Others</strong></td>
+                            <td>410</td>
+                            <td>19 chars</td>
+                            <td>4 chars</td>
+                            <td>128 (31.2%)</td>
+                            <td>282 (68.8%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>English - By Category Breakdown</h3>
+                <table class="label-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Avg Q Len</th>
+                            <th>Avg A Len</th>
+                            <th>Real-time</th>
+                            <th>Non-real-time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Daily</strong></td>
+                            <td>768</td>
+                            <td>80 chars</td>
+                            <td>13 chars</td>
+                            <td>140 (18.2%)</td>
+                            <td>628 (81.8%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sports and Competitions</strong></td>
+                            <td>327</td>
+                            <td>86 chars</td>
+                            <td>14 chars</td>
+                            <td>91 (27.8%)</td>
+                            <td>236 (72.2%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>History and Culture</strong></td>
+                            <td>2,365</td>
+                            <td>85 chars</td>
+                            <td>11 chars</td>
+                            <td>47 (2.0%)</td>
+                            <td>2,318 (98.0%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Company and Products</strong></td>
+                            <td>345</td>
+                            <td>82 chars</td>
+                            <td>14 chars</td>
+                            <td>91 (26.4%)</td>
+                            <td>254 (73.6%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Professional Fields</strong></td>
+                            <td>239</td>
+                            <td>80 chars</td>
+                            <td>13 chars</td>
+                            <td>57 (23.8%)</td>
+                            <td>182 (76.2%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Others</strong></td>
+                            <td>51</td>
+                            <td>74 chars</td>
+                            <td>12 chars</td>
+                            <td>13 (25.5%)</td>
+                            <td>38 (74.5%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Real-time vs Non-real-time Comparison</h3>
+                <div class="chart-container">
+                    <div class="chart-wrapper small">
+                        <canvas id="realtimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="chinese-examples">
+            <div class="container">
+                <h2>中文样例 / Chinese Examples</h2>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/ch/ch-audio-3.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">音频中提到的这个景点位于哪个市？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">故宫位于哪个市？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">北京市</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. 故宫作为中国古代皇家宫殿的典范，其地理位置处于中国北方的首都核心区域，是明清两代皇帝处理政务和居住的重要场所。
+2. 该建筑群以其宏伟的建筑群和深厚的历史文化内涵，成为北京历史文化的重要组成部分，也是世界文化遗产中的瑰宝。</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/ch/ch-audio-4.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">音频中提到的这个景点是哪两朝的皇宫？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">故宫是哪两朝的皇宫？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">明朝和清朝</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. 故宫，全称北京故宫，旧称紫禁城，始建于明成祖永乐四年，于永乐十八年建成，作为明朝的皇宫使用。清朝入主中原后，继续沿用此地作为皇宫，直至清朝灭亡，成为明清两朝最高统治核心的代名词，先后历经二十四位皇帝的统治。
+2. 作为世界上规模最大、保存最完好的古代木结构宫殿建筑群，故宫的建筑布局分为外朝和内廷两部分，外朝的三大殿和内廷的后三宫等结构，体现了明清两朝的宫廷制度与文化特色，其历史变迁深刻反映了中国封建王朝的兴衰历程。</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/ch/ch-audio-11.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">音频中提到的这个景点近期的普通门票价格是多少元？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">北海公园淡季的普通门票价格是多少元？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">5元</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. 北海公园在淡季期间（11月1日至3月31日）的普通门票价格为5元，该价格适用于整个淡季时段。2. 淡季开放时间从早上6:30开始至晚上20:00结束，园中园及小庭院的开放时间为8:30至17:00，游客需注意停止入园时间。</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/ch/ch-audio-6.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">音频中提到的这个景点在哪年建成？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">奥林匹克公园在哪年建成？</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">2008年</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. 北京奥林匹克公园始建于2003年，于2008年正式完工，作为2008年北京夏季奥运会和残奥会的核心举办地，其建设旨在为国际赛事提供专业场地并促进赛后可持续利用。
+2. 该公园后来发展为著名的'双奥园区'，不仅承办了2008年夏季奥运会，还成功举办了2022年冬季奥运会，包含国家体育场（鸟巢）、国家游泳中心（水立方）等标志性场馆，成为北京城市功能与文化的重要组成部分。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="english-examples">
+            <div class="container">
+                <h2>English Examples</h2>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/en/en-audio-6.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">In what year did the person mentioned in the audio become the World Chess Champion?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">In what year did Hikaru Nakamura become the World Chess Champion?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">Hikaru Nakamura has not won the World Chess Championship.</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. Hikaru Nakamura has never won the official World Chess Championship despite holding multiple U.S. Championship titles and maintaining a top-ten FIDE ranking for years, with his highest world ranking reaching second place in 2019. His prominence stems from national-level dominance and global recognition as one of the world's strongest players, but the World Championship title remains unattained.
+2. Nakamura's recent achievements include winning the Chessable Masters tournament as part of the Champions Chess Tour, which is a separate series from the FIDE World Championship cycle. His participation in high-profile events like matches against elite chess engines with handicaps further highlights his elite skill level without conflating it with the official World Championship title.</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/en/en-audio-7.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">When did the university mentioned in the audio establish its law school?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">When was Dartmouth Law School founded?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">Dartmouth College does not have a law school.</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. Dartmouth College does not have a law school, as it is structured as a college focused primarily on undergraduate education rather than offering professional graduate programs like law. This aligns with its historical commitment to liberal arts education and distinguishes it from other Ivy League institutions that maintain professional schools such as law.
+2. Founded in 1769, Dartmouth is the only Ivy League institution to retain the name 'College' instead of 'University,' reflecting its emphasis on undergraduate teaching. While it offers professional schools including medicine, engineering, and business, it does not maintain a law school, consistent with its longstanding focus on undergraduate liberal arts education and small-scale academic community.</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/en/en-audio-8.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">In what year did humans first land on the planet mentioned in the audio?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">What year did the first human land on Mars?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">Humans have not yet landed on Mars</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. All Mars exploration to date has been conducted exclusively by robotic spacecraft, with no human landings achieved; this includes missions like NASA's Perseverance rover and China's 'Yinghuo-1' probe, which aimed to study the planet's atmosphere but failed to reach Mars due to launch complications.
+2. While robotic missions continue to advance scientific understanding of Mars' surface and environment, human landings remain unrealized due to the immense technical challenges of sustaining life during interplanetary travel, including radiation exposure and prolonged isolation, with current efforts focused on developing capabilities for future crewed missions.</div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="field">
+                        <div class="field-label">Audio</div>
+                        <audio controls>
+                            <source src="audio/en/en-audio-11.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Question</div>
+                        <div class="field-content">What movie did the person mentioned in the audio win a Best Actor Academy Award for?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Golden Question</div>
+                        <div class="field-content">What movie did Clint Eastwood win a Best Actor Academy Award for?</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Answer</div>
+                        <div class="field-content answer-highlight">He has never won an Academy Award for Best Actor.</div>
+                    </div>
+                    <div class="field">
+                        <div class="field-label">Knowledge</div>
+                        <div class="field-content knowledge">1. Clint Eastwood has never won the Academy Award for Best Actor despite his decades-long acting career and iconic roles in films such as Dirty Harry and The Bridges of Madison County. His performances, while critically acclaimed, did not secure him the Best Actor Oscar, a fact often misunderstood due to his prominence in Hollywood.
+2. Eastwood's Oscar success came exclusively as a director, earning two Best Director awards for Unforgiven (1992) and Million Dollar Baby (2004), which highlights his dual prominence in Hollywood as both an actor and filmmaker without a Best Actor victory.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>RagSQA Dataset &copy; 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // Color scheme - extracted from construct.png
+        const labelColors = {
+            daily: {
+                main: '#c86271',        // Deep pink/rose (inner ring)
+                nonrealtime: '#c97a99', // Medium pink (outer - non-real-time)
+                realtime: '#e9b6c2'     // Light pink (outer - real-time)
+            },
+            sports: {
+                main: '#3c837d',        // Deep teal/cyan (inner ring)
+                nonrealtime: '#73aca1', // Medium cyan (outer - non-real-time)
+                realtime: '#cee2d8'     // Light cyan (outer - real-time)
+            },
+            history: {
+                main: '#edcb63',        // Deep golden yellow (inner ring)
+                nonrealtime: '#ebdd71', // Medium yellow (outer - non-real-time)
+                realtime: '#f3efc0'     // Light yellow (outer - real-time)
+            },
+            company: {
+                main: '#947d66',        // Deep brown/taupe (inner ring)
+                nonrealtime: '#d0b896', // Medium beige (outer - non-real-time)
+                realtime: '#e0d2c0'     // Light beige (outer - real-time)
+            },
+            professional: {
+                main: '#385393',        // Deep blue (inner ring)
+                nonrealtime: '#889ec7', // Medium blue (outer - non-real-time)
+                realtime: '#bdcddc'     // Light blue (outer - real-time)
+            },
+            others: {
+                main: '#774e74',        // Deep purple (inner ring)
+                nonrealtime: '#b099bd', // Medium purple (outer - non-real-time)
+                realtime: '#d1c7d1'     // Light purple (outer - real-time)
+            }
+        };
+
+        // Morandi color palette for other charts
+        const morandiColors = [
+            '#D4A5A5',  // Dusty rose
+            '#A5B9C4',  // Dusty blue
+            '#C4D4B5',  // Sage green
+            '#E8D4B8',  // Sand
+            '#B8A5C4',  // Dusty purple
+            '#C4BDA5'   // Olive
+        ];
+
+        // Nested Pie Chart - Category Distribution with Real-time breakdown
+        const nestedPieCtx = document.getElementById('nestedPieChart');
+
+        // Combined Chinese + English data by category
+        const categories = ['Daily', 'Sports and Competitions', 'History and Culture', 'Company and Products', 'Professional Fields', 'Others'];
+        const colorKeys = ['daily', 'sports', 'history', 'company', 'professional', 'others'];
+
+        // Total samples by category (CH + EN)
+        const categoryTotals = [1111, 726, 2864, 753, 516, 461];
+
+        // Real-time and Non-real-time by category (CH + EN combined)
+        const categoryRealtime = [326, 235, 242, 223, 152, 141];
+        const categoryNonRealtime = [785, 491, 2622, 530, 364, 320];
+
+        // Build outer ring data (real-time and non-real-time for each category)
+        const outerData = [];
+        const outerLabels = [];
+        const outerColors = [];
+
+        categories.forEach((cat, i) => {
+            outerData.push(categoryRealtime[i], categoryNonRealtime[i]);
+            outerLabels.push(
+                `${cat} (Real-time)`,
+                `${cat} (Non-real-time)`
+            );
+            outerColors.push(
+                labelColors[colorKeys[i]].realtime,
+                labelColors[colorKeys[i]].nonrealtime
+            );
+        });
+
+        new Chart(nestedPieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: outerLabels,
+                datasets: [
+                    {
+                        label: 'Real-time Breakdown',
+                        data: outerData,
+                        backgroundColor: outerColors,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Category',
+                        data: categoryTotals,
+                        backgroundColor: colorKeys.map(key => labelColors[key].main),
+                        borderColor: '#fff',
+                        borderWidth: 3,
+                        weight: 0.6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '15%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Category Distribution (Inner: Categories | Outer: Real-time/Non-real-time)',
+                        font: {
+                            size: 16,
+                            weight: '600',
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+                        },
+                        padding: {
+                            bottom: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return label + ': ' + value + ' samples (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Language comparison chart with Morandi colors
+        const languageCtx = document.getElementById('languageChart');
+        new Chart(languageCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Daily', 'Sports', 'History', 'Company', 'Professional', 'Others'],
+                datasets: [{
+                    label: 'Chinese',
+                    data: [343, 399, 499, 408, 277, 410],
+                    backgroundColor: morandiColors[0],
+                    borderColor: morandiColors[0],
+                    borderWidth: 1
+                }, {
+                    label: 'English',
+                    data: [768, 327, 2365, 345, 239, 51],
+                    backgroundColor: morandiColors[1],
+                    borderColor: morandiColors[1],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12,
+                                family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+                            },
+                            padding: 15
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sample Distribution by Category and Language',
+                        font: {
+                            size: 16,
+                            weight: '600',
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Real-time comparison chart with Morandi colors
+        const realtimeCtx = document.getElementById('realtimeChart');
+        new Chart(realtimeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Chinese Real-time', 'Chinese Non-real-time', 'English Real-time', 'English Non-real-time'],
+                datasets: [{
+                    data: [880, 1456, 439, 3656],
+                    backgroundColor: [
+                        morandiColors[0],  // Dusty rose for CH real-time
+                        morandiColors[1],  // Dusty blue for CH non-real-time
+                        morandiColors[2],  // Sage green for EN real-time
+                        morandiColors[3]   // Sand for EN non-real-time
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '40%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12,
+                                family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Real-time vs Non-real-time Query Distribution',
+                        font: {
+                            size: 16,
+                            weight: '600',
+                            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
