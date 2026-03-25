@@ -811,26 +811,26 @@
                     <div class="field">
                         <div class="field-label">Audio</div>
                         <audio controls>
-                            <source src="audio/en/en-audio-8.wav" type="audio/wav">
+                            <source src="audio/en/en-audio-5.wav" type="audio/wav">
                             Your browser does not support the audio element.
                         </audio>
                     </div>
                     <div class="field">
                         <div class="field-label">Question</div>
-                        <div class="field-content">In what year did humans first land on the planet mentioned in the audio?</div>
+                        <div class="field-content">When did Frontier purchase the airline mentioned in the audio?</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Golden Question</div>
-                        <div class="field-content">What year did the first human land on Mars?</div>
+                        <div class="field-content">When did Frontier purchase Spirit Airlines?</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Answer</div>
-                        <div class="field-content answer-highlight">Humans have not yet landed on Mars</div>
+                        <div class="field-content answer-highlight">Frontier Airlines did not acquire Spirit Airlines, the deal was canceled.</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Knowledge</div>
-                        <div class="field-content knowledge">1. All Mars exploration to date has been conducted exclusively by robotic spacecraft, with no human landings achieved; this includes missions like NASA's Perseverance rover and China's 'Yinghuo-1' probe, which aimed to study the planet's atmosphere but failed to reach Mars due to launch complications.
-2. While robotic missions continue to advance scientific understanding of Mars' surface and environment, human landings remain unrealized due to the immense technical challenges of sustaining life during interplanetary travel, including radiation exposure and prolonged isolation, with current efforts focused on developing capabilities for future crewed missions.</div>
+                        <div class="field-content knowledge">1. Frontier Airlines and Spirit Airlines signed a binding merger agreement, but the transaction was canceled due to regulatory hurdles and competing bids from JetBlue Airlines, meaning Frontier never acquired Spirit Airlines. The proposed deal, valued at approximately $X billion, was ultimately abandoned despite initial plans for Frontier to hold a majority stake in the merged entity.
+2. Spirit Airlines' management had initially prioritized Frontier's proposal as it appeared more likely to gain regulatory approval, but the merger failed after JetBlue increased its offer to $X per share, leading to the cancellation of the transaction despite ongoing negotiations and a scheduled shareholder vote.</div>
                     </div>
                 </div>
 
@@ -949,7 +949,6 @@
         new Chart(nestedPieCtx, {
             type: 'doughnut',
             data: {
-                labels: outerLabels,
                 datasets: [
                     {
                         label: 'Real-time Breakdown',
@@ -990,12 +989,30 @@
                     },
                     tooltip: {
                         callbacks: {
+                            title: function() {
+                                return '';  // Remove default title
+                            },
                             label: function(context) {
-                                const label = context.label || '';
+                                const datasetIndex = context.datasetIndex;
+                                const dataIndex = context.dataIndex;
                                 const value = context.parsed || 0;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return label + ': ' + value + ' samples (' + percentage + '%)';
+
+                                if (datasetIndex === 1) {
+                                    // Inner ring - show category name and total
+                                    const categoryName = categories[dataIndex];
+                                    const total = categoryTotals.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return categoryName + ': ' + value.toLocaleString() + ' samples (' + percentage + '%)';
+                                } else {
+                                    // Outer ring - show category with real-time/non-real-time
+                                    const categoryIndex = Math.floor(dataIndex / 2);
+                                    const isRealtime = dataIndex % 2 === 0;
+                                    const categoryName = categories[categoryIndex];
+                                    const type = isRealtime ? 'Real-time' : 'Non-real-time';
+                                    const total = outerData.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return categoryName + ' (' + type + '): ' + value.toLocaleString() + ' samples (' + percentage + '%)';
+                                }
                             }
                         }
                     }
