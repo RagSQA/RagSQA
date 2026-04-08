@@ -78,4 +78,4 @@ Each sample is stored as a JSON object with the following fields:
 
 ## Download
 
-The full dataset (audio + annotations) is available [here](https://placeholder.quark.cn).
+The full dataset (audio + annotations) is available [here]([https://placeholder.quark.cn](https://pan.quark.cn/s/f3282d829b41)).
