@@ -362,6 +362,49 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Header intro with dataset link */
+        .header-intro {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .header-intro .subtitle {
+            margin-top: 0;
+            max-width: none;
+            flex: 1;
+        }
+
+        .dataset-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            color: #555;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            border: 1px solid #e0e0e0;
+            transition: background 0.2s, color 0.2s;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .dataset-link:hover {
+            background: #e4e4e4;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .header-intro {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -380,7 +423,10 @@
     <header id="overview">
         <div class="container">
             <h1>RagSQA</h1>
-            <p class="subtitle">A comprehensive bilingual audio-based question answering dataset featuring real-time and knowledge-based queries. RagSQA combines spoken audio with context-dependent questions, enabling research in multimodal reasoning and temporal information retrieval.</p>
+            <div class="header-intro">
+                <p class="subtitle">A comprehensive bilingual audio-based question answering dataset featuring real-time and knowledge-based queries. RagSQA combines spoken audio with context-dependent questions, enabling research in multimodal reasoning and temporal information retrieval.</p>
+                <a href="QUARK_NETDISK_URL_HERE" class="dataset-link" target="_blank" rel="noopener">View Full Dataset →</a>
+            </div>
             <div class="quick-stats">
                 <div class="stat-box">
                     <span class="stat-number">6,431</span>
@@ -644,26 +690,26 @@
                     <div class="field">
                         <div class="field-label">Audio</div>
                         <audio controls>
-                            <source src="audio/ch/ch-audio-3.wav" type="audio/wav">
+                            <source src="audio/ch/ch-audio-919.wav" type="audio/wav">
                             Your browser does not support the audio element.
                         </audio>
                     </div>
                     <div class="field">
                         <div class="field-label">Question</div>
-                        <div class="field-content">音频中提到的这个景点位于哪个市？</div>
+                        <div class="field-content">音频里提到的这个公司在游戏领域的核心技术是什么？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Golden Question</div>
-                        <div class="field-content">故宫位于哪个市？</div>
+                        <div class="field-content">英伟达在游戏领域的核心技术是什么？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Answer</div>
-                        <div class="field-content answer-highlight">北京市</div>
+                        <div class="field-content answer-highlight">CUDA和PhysX</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Knowledge</div>
-                        <div class="field-content knowledge">1. 故宫作为中国古代皇家宫殿的典范，其地理位置处于中国北方的首都核心区域，是明清两代皇帝处理政务和居住的重要场所。
-2. 该建筑群以其宏伟的建筑群和深厚的历史文化内涵，成为北京历史文化的重要组成部分，也是世界文化遗产中的瑰宝。</div>
+                        <div class="field-content knowledge">1. 英伟达在游戏开发中广泛应用深度学习超采样（DLSS）技术，通过AI将低分辨率画面智能提升至高分辨率，显著改善画面品质与帧率，这一创新已成为其游戏渲染领域的核心优势。
+2. 公司推出的神经网络渲染引擎和神经材质技术进一步简化了复杂材质的渲染过程，摒弃传统繁琐的光线计算，实时生成逼真视觉效果，大幅降低开发成本并提升画面细腻度。</div>
                     </div>
                 </div>
 
@@ -671,26 +717,26 @@
                     <div class="field">
                         <div class="field-label">Audio</div>
                         <audio controls>
-                            <source src="audio/ch/ch-audio-4.wav" type="audio/wav">
+                            <source src="audio/ch/ch-audio-830.wav" type="audio/wav">
                             Your browser does not support the audio element.
                         </audio>
                     </div>
                     <div class="field">
                         <div class="field-label">Question</div>
-                        <div class="field-content">音频中提到的这个景点是哪两朝的皇宫？</div>
+                        <div class="field-content">音频里提到的这个榨汁杯的电机转速是多少每分钟？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Golden Question</div>
-                        <div class="field-content">故宫是哪两朝的皇宫？</div>
+                        <div class="field-content">米家便携随行榨汁杯的电机转速是多少每分钟？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Answer</div>
-                        <div class="field-content answer-highlight">明朝和清朝</div>
+                        <div class="field-content answer-highlight">19500转/分</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Knowledge</div>
-                        <div class="field-content knowledge">1. 故宫，全称北京故宫，旧称紫禁城，始建于明成祖永乐四年，于永乐十八年建成，作为明朝的皇宫使用。清朝入主中原后，继续沿用此地作为皇宫，直至清朝灭亡，成为明清两朝最高统治核心的代名词，先后历经二十四位皇帝的统治。
-2. 作为世界上规模最大、保存最完好的古代木结构宫殿建筑群，故宫的建筑布局分为外朝和内廷两部分，外朝的三大殿和内廷的后三宫等结构，体现了明清两朝的宫廷制度与文化特色，其历史变迁深刻反映了中国封建王朝的兴衰历程。</div>
+                        <div class="field-content knowledge">1. 米家便携随行榨汁杯搭载了高性能直流电机，其转速参数被明确标注为每分钟19500转，这一高速设计能迅速破碎水果和冰块，实现高效榨汁过程，同时确保果汁口感细腻且残渣率极低。
+2. 该设备采用304不锈钢四叶刀头结构，配合1300mAh大容量锂电池，一次充电可连续榨汁约12杯，支持Type-C通用充电接口，便于在户外或移动场景中快速补充电力，且内置自清洗功能简化了日常维护流程。</div>
                     </div>
                 </div>
 
@@ -698,25 +744,26 @@
                     <div class="field">
                         <div class="field-label">Audio</div>
                         <audio controls>
-                            <source src="audio/ch/ch-audio-11.wav" type="audio/wav">
+                            <source src="audio/ch/ch-audio-1463.wav" type="audio/wav">
                             Your browser does not support the audio element.
                         </audio>
                     </div>
                     <div class="field">
                         <div class="field-label">Question</div>
-                        <div class="field-content">音频中提到的这个景点近期的普通门票价格是多少元？</div>
+                        <div class="field-content">音频中提到的诗词的题目是啥？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Golden Question</div>
-                        <div class="field-content">北海公园淡季的普通门票价格是多少元？</div>
+                        <div class="field-content">"朝闻道，夕死可矣。"的题目是啥？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Answer</div>
-                        <div class="field-content answer-highlight">5元</div>
+                        <div class="field-content answer-highlight">论语里仁</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Knowledge</div>
-                        <div class="field-content knowledge">1. 北海公园在淡季期间（11月1日至3月31日）的普通门票价格为5元，该价格适用于整个淡季时段。2. 淡季开放时间从早上6:30开始至晚上20:00结束，园中园及小庭院的开放时间为8:30至17:00，游客需注意停止入园时间。</div>
+                        <div class="field-content knowledge">1. 这句话出自《论语·里仁》篇，是孔子在阐述儒家核心思想时提出的经典表述，强调了对真理或道德准则的追求之迫切，即使生命终结前也能获得精神满足。其语境中'道'特指'仁义之道'，而非泛泛的道理，体现了孔子对道德实践的高度重视。
+2. 在儒家思想体系中，'朝闻道，夕死可矣'不仅表达了对真理的热切向往，更突显了'仁'作为最高道德准则的终极价值，表明真正的智慧在于践行仁德而非仅仅知晓道理，这一理念深刻影响了后世对生命意义的思考。</div>
                     </div>
                 </div>
 
@@ -724,26 +771,26 @@
                     <div class="field">
                         <div class="field-label">Audio</div>
                         <audio controls>
-                            <source src="audio/ch/ch-audio-6.wav" type="audio/wav">
+                            <source src="audio/ch/ch-audio-1572.wav" type="audio/wav">
                             Your browser does not support the audio element.
                         </audio>
                     </div>
                     <div class="field">
                         <div class="field-label">Question</div>
-                        <div class="field-content">音频中提到的这个景点在哪年建成？</div>
+                        <div class="field-content">音频中提到的电视剧和哪些剧统称为振华三部曲？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Golden Question</div>
-                        <div class="field-content">奥林匹克公园在哪年建成？</div>
+                        <div class="field-content">《最好的我们》和哪些剧统称为振华三部曲？</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Answer</div>
-                        <div class="field-content answer-highlight">2008年</div>
+                        <div class="field-content answer-highlight">与《你好，旧时光》和《暗恋橘生淮南》统称为振华三部曲</div>
                     </div>
                     <div class="field">
                         <div class="field-label">Knowledge</div>
-                        <div class="field-content knowledge">1. 北京奥林匹克公园始建于2003年，于2008年正式完工，作为2008年北京夏季奥运会和残奥会的核心举办地，其建设旨在为国际赛事提供专业场地并促进赛后可持续利用。
-2. 该公园后来发展为著名的'双奥园区'，不仅承办了2008年夏季奥运会，还成功举办了2022年冬季奥运会，包含国家体育场（鸟巢）、国家游泳中心（水立方）等标志性场馆，成为北京城市功能与文化的重要组成部分。</div>
+                        <div class="field-content knowledge">1. 振华三部曲是八月长安创作的青春文学系列改编的电视剧，以校园生活为背景，聚焦于学生时代的成长与情感故事。
+2. 该系列具体包括《最好的我们》、《你好，旧时光》和《暗恋橘生淮南》三部作品，共同构成了完整的振华三部曲，每部剧都围绕不同角色的青春经历展开。</div>
                     </div>
                 </div>
             </div>
