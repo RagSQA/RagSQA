@@ -2,7 +2,10 @@
 
 A comprehensive bilingual spoken question answering dataset featuring real-time and knowledge-based queries. RagSQA combines spoken audio with context-dependent questions, enabling research in multimodal reasoning and temporal information retrieval.
 
+
 The full dataset is available for download [here](https://pan.quark.cn/s/f3282d829b41).
+
+To obtain the extraction code, please [contact us](mailto:m202421074@xs.ustb.edu.cn).
 
 ---
 
@@ -78,4 +81,6 @@ Each sample is stored as a JSON object with the following fields:
 
 ## Download
 
-The full dataset (audio + annotations) is available [here]([https://placeholder.quark.cn](https://pan.quark.cn/s/f3282d829b41)).
+The full dataset is available for download [here](https://pan.quark.cn/s/f3282d829b41).
+
+To obtain the extraction code, please [contact us](mailto:m202421074@xs.ustb.edu.cn).
